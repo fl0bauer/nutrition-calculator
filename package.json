@@ -9,6 +9,9 @@
     "provenance": true,
     "access": "public"
   },
+  "repository": {
+    "url": "https://github.com/fl0bauer/nutrition-calculator"
+  },
   "scripts": {
     "build": "tsup index.ts --format cjs,esm --dts",
     "lint": "tsc",
