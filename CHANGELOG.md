@@ -1,5 +1,11 @@
 # nutrition-calculator
 
+## 1.1.1
+
+### Patch Changes
+
+- 4664663: Add Documentation README.md file with short usage summary
+
 ## 1.1.0
 
 ### Minor Changes
