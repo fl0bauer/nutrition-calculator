@@ -1,6 +1,6 @@
 import { Gender } from "./enums/gender.enum";
 import { ActivityFactor } from "./enums/activity-factor.enum";
-import { BodyMeasurements } from "./types/body-measurements.type";
+import { BodyMeasurements, BodyMeasurementsSchema } from "./types/body-measurements.type";
 import { ACTIVITY_FACTORS } from "./constants/activity-factors.constants";
 
 /**
@@ -10,6 +10,12 @@ import { ACTIVITY_FACTORS } from "./constants/activity-factors.constants";
  * @param activityFactor factor that considers the daily activity
  */
 export function calculateMaintenanceCalories(gender: Gender, bodyMeasurements: BodyMeasurements, activityFactor: ActivityFactor): number {
+    const { success, error } = BodyMeasurementsSchema.safeParse(bodyMeasurements);
+
+    if (!success) {
+        throw new Error(error.message);
+    }
+
     const baseMetabolicRate = calculateBasalMetabolicRate(gender, bodyMeasurements);
     const factor = ACTIVITY_FACTORS[activityFactor];
 
