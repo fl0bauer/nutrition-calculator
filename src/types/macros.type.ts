@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export interface MacroNutritions {
     // `carbohydrates` in `g`
     carbohydrates: number,
@@ -9,13 +11,15 @@ export interface MacroNutritions {
     protein: number
 }
 
-export interface MacroNutritionSplit {
+export const MacroNutritionSplitSchema = z.object({
     // amount of `carbohydrates` in `%`
-    carbohydrates: number,
+    carbohydrates: z.number().min(0).max(100),
 
     // amount of `fat` in `%`
-    fat: number,
+    fat: z.number().min(0).max(100),
 
     // amount of `protein` in `%`
-    protein: number,
-}
+    protein: z.number().min(0).max(100)
+})
+
+export type MacroNutritionSplit = z.infer<typeof MacroNutritionSplitSchema>;

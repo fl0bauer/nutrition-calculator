@@ -1,5 +1,5 @@
 import { CARBOHYDRATE_CALORIES_FACTOR, FAT_CALORIES_FACTOR, PROTEIN_CALORIES_FACTOR } from "./constants/calorie-factors.constants";
-import { MacroNutritions, MacroNutritionSplit } from "./types/macros.type";
+import { MacroNutritions, MacroNutritionSplit, MacroNutritionSplitSchema } from "./types/macros.type";
 
 /**
  * calculate the macro nutritions for the given calories
@@ -7,8 +7,18 @@ import { MacroNutritions, MacroNutritionSplit } from "./types/macros.type";
  * @param split macro nutrition split that decides how much of each macro nutrition should be calculated from calories
  */
 export function calculateMacroNutritions(calories: number, split: MacroNutritionSplit): MacroNutritions {
+    const { success, error } = MacroNutritionSplitSchema.safeParse(split);
+
+    if (!success) {
+        throw new Error(error.message);
+    }
+
     if ((split.carbohydrates + split.fat + split.protein) !== 100) {
         throw new Error('macro nutrition split should be equal to 100%');
+    }
+
+    if (calories <= 0) {
+        throw new Error('calories must be greater than 0');
     }
 
     const carbohydrates = calculateMacroNutrition(calories, split.carbohydrates, CARBOHYDRATE_CALORIES_FACTOR);
