@@ -15,19 +15,22 @@ Here’s how you can use the package to calculate your Maintenance Calories and 
 
 ### Calculate Maintenance Calories
 
+- `gender` options: `male` | `female`
 - `height` in `cm`
 - `weight` in `kg`
 - `age` in `years`
+- `activity` options: `sedentary`, `lightActivity`, `moderatelyActive`, `veryActive`, `extraActive`
 
 ```typescript
 import { calculateMaintenanceCalories, Gender, ActivityFactor } from 'nutrition-calculator';
 
-calculateMaintenanceCalories(Gender.Male, { height: 184, weight: 94.2, age: 32 }, ActivityFactor.LightActivity); 
+calculateMaintenanceCalories({ gender: 'male', height: 184, weight: 94.2, age: 32, activity: 'lightActivity' });
 // -> 2841
 ```
 
 ### Calculate Macro Nutritions
 
+- `calories` which the nutrition split is based on
 - amount of `carbohydrates` in `%`
 - amount of `fat` in `%`
 - amount of `proteins` in `%`
@@ -35,8 +38,7 @@ calculateMaintenanceCalories(Gender.Male, { height: 184, weight: 94.2, age: 32 }
 ```typescript
 import { calculateMacroNutritions } from 'nutrition-calculator';
 
-const maintenanceCalories = 2841;
-calculateMacroNutritions(maintenanceCalories, { carbohydrates: 50, fat: 30, protein: 20 });
+calculateMacroNutritions({ calories: 2841, percentageSplit: { carbohydrates: 50, fat: 30, protein: 20 } });
 // -> { carbohydrates: 355, fat: 95, protein: 142 }
 ```
 
