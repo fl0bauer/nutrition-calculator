@@ -1,25 +1,25 @@
-import { Gender } from "./enums/gender.enum";
-import { ActivityFactor } from "./enums/activity-factor.enum";
-import { BodyMeasurements, BodyMeasurementsSchema } from "./types/body-measurements.type";
 import { ACTIVITY_FACTORS } from "./constants/activity-factors.constants";
+import { CalculateMaintenanceCalories, CalculateMaintenanceCaloriesSchema } from "./types/calories.types";
 
 /**
  * calculate the maintenance calories based on gender, weight, height, age and activity
- * @param gender male or female to decide which formula should be used
- * @param bodyMeasurements measurements such as weight, height and age
- * @param activityFactor factor that considers the daily activity
+ * @param gender male or female
+ * @param weight in kilograms
+ * @param height in centimeters
+ * @param age in years
+ * @param activity factor based on daily activity
  */
-export function calculateMaintenanceCalories(gender: Gender, bodyMeasurements: BodyMeasurements, activityFactor: ActivityFactor): number {
-    const { success, error } = BodyMeasurementsSchema.safeParse(bodyMeasurements);
+export function calculateMaintenanceCalories({ gender, weight, height, age, activity }: CalculateMaintenanceCalories): number {
+    const { success, error } = CalculateMaintenanceCaloriesSchema.safeParse({ gender, weight, height, age, activity });
 
     if (!success) {
         throw new Error(error.message);
     }
 
-    const baseMetabolicRate = calculateBasalMetabolicRate(gender, bodyMeasurements);
-    const factor = ACTIVITY_FACTORS[activityFactor];
+    const baseMetabolicRate = calculateBasalMetabolicRate({ gender, weight, height, age });
+    const activityFactor = ACTIVITY_FACTORS[activity];
 
-    return Math.round(baseMetabolicRate * factor);
+    return Math.round(baseMetabolicRate * activityFactor);
 }
 
 /**
@@ -27,24 +27,34 @@ export function calculateMaintenanceCalories(gender: Gender, bodyMeasurements: B
  * @param gender male or female to decide which formula should be used
  * @param bodyMeasurements measurements such as weight, height and age
  */
-function calculateBasalMetabolicRate(gender: Gender, bodyMeasurements: BodyMeasurements): number {
-    return gender === 'male' ? calculateBasalMetabolicRateMale(bodyMeasurements) : calculateBasalMetabolicRateFemale(bodyMeasurements);
+function calculateBasalMetabolicRate({ gender, weight, height, age }: Pick<CalculateMaintenanceCalories, 'gender' | 'weight' | 'height' | 'age'>): number {
+    if (gender === 'male') {
+        return calculateBasalMetabolicRateMale({ weight,  height, age});
+    }
+
+    if (gender === 'female') {
+        return calculateBasalMetabolicRateFemale({ weight,  height, age});
+    }
+
+    throw new Error('Unknown gender');
 }
 
 /**
  * calculate the basal metabolic rate for males
- * @param bodyMeasurements measurements such as weight, height and age
+ * @param weight in kilograms
+ * @param height in centimeters
+ * @param age in years
  */
-function calculateBasalMetabolicRateMale(bodyMeasurements: BodyMeasurements): number {
-    const { weight, height, age } = bodyMeasurements;
+function calculateBasalMetabolicRateMale({ weight, height, age }: Pick<CalculateMaintenanceCalories, 'weight' | 'height' | 'age'>): number {
     return Math.round(66.5 + (13.75 * weight) + (5 * height) - (6.75 * age));
 }
 
 /**
  * calculate the basal metabolic rate for females
- * @param bodyMeasurements measurements such as weight, height and age
+ * @param weight in kilograms
+ * @param height in centimeters
+ * @param age in years
  */
-function calculateBasalMetabolicRateFemale(bodyMeasurements: BodyMeasurements): number {
-    const { weight, height, age } = bodyMeasurements;
+function calculateBasalMetabolicRateFemale({ weight, height, age }: Pick<CalculateMaintenanceCalories, 'weight' | 'height' | 'age'>): number {
     return Math.round(655.1 + (9.563 * weight) + (1.85 * height) - (4.676 * age));
 }

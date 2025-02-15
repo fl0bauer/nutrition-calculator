@@ -1,9 +1,9 @@
-import { ActivityFactor } from "../enums/activity-factor.enum";
+import { CalculateMaintenanceCalories } from "../types/calories.types";
 
-export const ACTIVITY_FACTORS: Record<ActivityFactor, number> = {
-    [ActivityFactor.Sedentary]: 1.2,
-    [ActivityFactor.LightActivity]: 1.375,
-    [ActivityFactor.ModeratelyActive]: 1.55,
-    [ActivityFactor.VeryActive]: 1.725,
-    [ActivityFactor.ExtraActive]: 1.9
-} as const
+export const ACTIVITY_FACTORS: Record<CalculateMaintenanceCalories['activity'], number> = {
+    sedentary: 1.2,
+    lightActivity: 1.375,
+    moderatelyActive: 1.55,
+    veryActive: 1.725,
+    extraActive: 1.9
+}
